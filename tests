@@ -1,0 +1,140 @@
+-d
+abc"def
+[1,1]
+test_input_1
+check no quotes in delim
+ERROR
+---
+-d
+abc\def
+[1,1]
+test_input_1
+check no backslash in delim
+ERROR
+---
+
+
+set Ahoy
+test_input_1
+set Ahoy
+set_Ahoy
+---
+
+
+irow
+test_input_1
+irow
+irow
+---
+
+
+arow
+test_input_1
+arow
+arow
+---
+
+
+drow
+test_input_1
+drow
+drow
+---
+
+
+icol
+test_input_1
+icol
+icol
+---
+
+
+acol
+test_input_1
+acol
+acol
+---
+
+
+dcol
+test_input_1
+dcol
+dcol
+---
+
+
+clear
+test_input_1
+clear
+clear
+---
+
+
+swap [2,1]
+test_input_1
+swap
+swap_2_1
+---
+-d
+:
+sum [1, 2]
+test_input_2
+sum
+sum_1_2
+---
+-d
+:
+[_,1];sum [1, 2]
+test_input_2
+[_,1];sum
+sum_c_1_2
+---
+-d
+:
+avg [1, 2]
+test_input_2
+avg
+avg_1_2
+---
+-d
+:
+[_,1];avg [1, 2]
+test_input_2
+[_,1];avg
+avg_c_1_2
+---
+-d
+:
+count [1, 2]
+test_input_2
+count
+count_1_2
+---
+-d
+:
+[_,1];count [1, 2]
+test_input_2
+[_,1];count
+count_c_1_2
+---
+-d
+:
+len [1, 2]
+test_input_2
+len
+len_1_2
+---
+-d
+:
+[_,1];len [1, 2]
+test_input_2
+[_,1];len
+len_c_1_2
+---
+
+
+def _3;[2,2];use _3
+test_input_1
+def-use
+def_3_use_3
+---
