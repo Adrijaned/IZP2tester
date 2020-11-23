@@ -72,10 +72,16 @@ def main():
                 args = [testLines[7 * i + 2]]
             test_cases.append(TestCase(args, testLines[7 * i + 3], testLines[7 * i + 4], testLines[7 * i + 5]))
 
+    passedCount, wholeCount = 0, 0
     for test_case in test_cases:
         test_case.run_test()
-        if not test_case.is_passed() or '-v' in sys.argv:
+        isPassed = test_case.is_passed()
+        wholeCount += 1
+        if isPassed:
+            passedCount += 1
+        if not isPassed or '-v' in sys.argv:
             print(test_case.get_log())
+    print(f"Passed {passedCount} tests out of {wholeCount}.")
 
 if __name__ == '__main__':
     main()
