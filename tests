@@ -138,3 +138,31 @@ test_input_1
 def-use
 def_3_use_3
 ---
+
+
+[1,1,3,1];dcol;set set
+test_input_1
+[1,1,3,1];dcol;set set
+3_dcol
+---
+
+
+[1,_];irow;[1,1];set Jmeno;[1,2];set Prijmeni;[1,3];set Plat
+tab.txt
+Příklad ze zadání 1
+tab1.txt
+---
+
+
+[1,_];irow;[1,1];set Jmeno;[1,2];set Prijmeni;[1,3];set Plat;[_,_];[max];def _0;[2,3,-,3];use _0
+tab.txt
+Příklad ze zadání 2
+tab2.txt
+---
+
+
+[1,_];irow;[1,1];set Jmeno;[1,2];set Prijmeni;[1,3];set Plat;[_,_];[max];def _0;[2,3,-,3];use _0;[_,3];acol;[1,_];swap [1,4];inc _1;[2,_];swap [2,4];[2,1];use _1;inc _1;[3,_];swap [3,4];[3,1];use _1;inc _1;[4,_];swap [4,4];[4,1];use _1
+tab.txt
+Příklad ze zadání 3
+tab3.txt
+---
