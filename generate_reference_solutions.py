@@ -1,4 +1,5 @@
 import subprocess
+import json
 from typing import *
 
 
@@ -24,15 +25,16 @@ class TestCase:
 
 def main():
     test_cases: List[TestCase] = []
-    with open('tests', 'r') as testsFile:
-        testLines = [s.strip() for s in testsFile.readlines()]
-        for i in range(int(len(testLines) / 7)):
-            if testLines[7 * i] != "":
-                args = [testLines[7 * i], testLines[7 * i + 1], testLines[7 * i + 2]]
-            else:
-                args = [testLines[7 * i + 2]]
-            if testLines[7 * i + 5] != 'ERROR':
-                test_cases.append(TestCase(args, testLines[7 * i + 3], testLines[7 * i + 4], testLines[7 * i + 5]))
+
+    with open('tests.json') as f:
+        tests_dict = json.loads(f.read())
+
+    for test in tests_dict:
+        args = [test['cmds']]
+        if test.get('delim'):
+            args = ['-d', test['delim']] + args
+
+        test_cases += [TestCase(args, test['input'], test['name'], test['output'])]
 
     for test_case in test_cases:
         test_case.run_test()

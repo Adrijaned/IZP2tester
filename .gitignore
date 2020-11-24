@@ -1,6 +1,6 @@
 *
 !IZP2tester_zs2020.py
-!tests
+!tests.json
 !generate_reference_solutions.py
 !sps-reference
 !test_input_1
