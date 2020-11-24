@@ -25,6 +25,8 @@ class TestCase:
                 subprocess.run(["./sps"] + self.args + [test_input_file.name], timeout=1000, check=True)
                 test_input_file.seek(0)
                 self.actual_output = test_input_file.read().decode("utf-8")
+            except UnicodeDecodeError:
+                self.ectual_output = "BINARY_TRASH"
             except TimeoutError:
                 self.actual_output = "TIMED OUT"
             except subprocess.CalledProcessError as err:
