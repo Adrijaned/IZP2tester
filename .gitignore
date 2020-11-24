@@ -6,5 +6,6 @@
 !test_input_1
 !test_input_2
 !test_input_edges
+!empty_input
 !.gitignore
 !tab.txt

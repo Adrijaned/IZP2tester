@@ -215,3 +215,10 @@ test_input_edges
 This test mainly validates correct handling of table as present in test_input_edges
 test_input_edges_out
 ---
+-d
+:
+set 25;[1,2];set 1;[1,3];set 1;[1,1];def _4;[1,2];def _1;[1,3];def _2;[1,1];set 1;def _0;sub _4 _0;iszero _4 +15;set 0;use _1;def _3;set 0;def _0;sub _0 _2;sub _3 _0;set 0;use _2;def _1;set 0;use _3;def _2;goto -17;use _1
+empty_input
+Calculates 25th fibonacci number. Requires implemented goto's and relevant.
+fib25
+---
