@@ -26,7 +26,7 @@ class TestCase:
                 test_input_file.seek(0)
                 self.actual_output = test_input_file.read().decode("utf-8")
             except UnicodeDecodeError:
-                self.ectual_output = "BINARY_TRASH"
+                self.actual_output = "BINARY_TRASH"
             except TimeoutError:
                 self.actual_output = "TIMED OUT"
             except subprocess.CalledProcessError as err:
