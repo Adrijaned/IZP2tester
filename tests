@@ -166,3 +166,45 @@ tab.txt
 Příklad ze zadání 3
 tab3.txt
 ---
+
+
+set normal
+test_input_1
+set regular string
+set_normal
+---
+
+
+set "quoted"
+test_input_1
+set regular quoted string. The result should not be quoted, because it has no reason to be
+set_normal_quoted
+---
+
+
+set "quoted delim containing string, duh!"
+test_input_1
+set quoted string with delims. The result should be quoted because of the delims
+set_delims_quoted
+---
+
+
+set back\nslashed
+test_input_1
+set string with backslash. Here the backslash is NOP.
+set_normal_backslash
+---
+
+
+set "back\nslashed"
+test_input_1
+set quoted string with backslash. Here the backslash is similarly NOP.
+set_quoted_backslash
+---
+
+
+set testing\ delims\ through\ backslashes
+test_input_1
+Per spec, cells containing delims must be quoted on output, no matter how they were input
+set_backslashed_delims
+---
