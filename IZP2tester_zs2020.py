@@ -26,15 +26,15 @@ class TestCase:
                 test_input_file.seek(0)
                 self.actual_output = test_input_file.read().decode("utf-8")
             except UnicodeDecodeError:
-                self.actual_output = "BINARY_TRASH"
+                self.actual_output = "BINARY_TRASH\n\n"
             except TimeoutError:
-                self.actual_output = "TIMED OUT"
+                self.actual_output = "TIMED OUT\n\n"
             except subprocess.CalledProcessError as err:
                 # -11 represents SEGFAULT: https://code-examples.net/en/q/11dd30f
                 if err.returncode == -11:
-                    self.actual_output = "SEGFAULT"
+                    self.actual_output = "SEGFAULT\n\n"
                 else:
-                    self.actual_output = "ERROR"
+                    self.actual_output = "ERROR\n\n"
 
     def is_passed(self):
         if self.expected_output != 'ERROR':
