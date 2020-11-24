@@ -77,56 +77,56 @@ swap_2_1
 ---
 -d
 :
-sum [1, 2]
+sum [1,2]
 test_input_2
 sum
 sum_1_2
 ---
 -d
 :
-[_,1];sum [1, 2]
+[_,1];sum [1,2]
 test_input_2
 [_,1];sum
 sum_c_1_2
 ---
 -d
 :
-avg [1, 2]
+avg [1,2]
 test_input_2
 avg
 avg_1_2
 ---
 -d
 :
-[_,1];avg [1, 2]
+[_,1];avg [1,2]
 test_input_2
 [_,1];avg
 avg_c_1_2
 ---
 -d
 :
-count [1, 2]
+count [1,2]
 test_input_2
 count
 count_1_2
 ---
 -d
 :
-[_,1];count [1, 2]
+[_,1];count [1,2]
 test_input_2
 [_,1];count
 count_c_1_2
 ---
 -d
 :
-len [1, 2]
+len [1,2]
 test_input_2
 len
 len_1_2
 ---
 -d
 :
-[_,1];len [1, 2]
+[_,1];len [1,2]
 test_input_2
 [_,1];len
 len_c_1_2
@@ -207,4 +207,11 @@ set testing\ delims\ through\ backslashes
 test_input_1
 Per spec, cells containing delims must be quoted on output, no matter how they were input
 set_backslashed_delims
+---
+-d
+,
+[1,4];set "\y\e\p\,\ \t\h\o\s\e\"\ \a\r\e\\\ \e\d\g\e\ \c\a\s\e\s"
+test_input_edges
+This test mainly validates correct handling of table as present in test_input_edges
+test_input_edges_out
 ---
