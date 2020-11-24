@@ -27,8 +27,12 @@ class TestCase:
                 self.actual_output = test_input_file.read().decode("utf-8")
             except TimeoutError:
                 self.actual_output = "TIMED OUT"
-            except subprocess.CalledProcessError:
-                self.actual_output = "ERROR"
+            except subprocess.CalledProcessError as err:
+                # -11 represents SEGFAULT: https://code-examples.net/en/q/11dd30f
+                if err.returncode == -11:
+                    self.actual_output = "SEGFAULT"
+                else:
+                    self.actual_output = "ERROR"
 
     def is_passed(self):
         if self.expected_output != 'ERROR':
