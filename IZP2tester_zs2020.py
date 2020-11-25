@@ -2,6 +2,7 @@ import subprocess
 from typing import *
 import tempfile
 import sys
+import json
 
 
 class TestCase:
@@ -41,7 +42,7 @@ class TestCase:
             with open(self.expected_output, 'r') as resultFile:
                 exp_out = resultFile.read()
         else:
-            exp_out = 'ERROR'
+            exp_out = 'ERROR\n\n'
         return exp_out == self.actual_output
 
     def get_log(self) -> str:
@@ -69,14 +70,13 @@ class TestCase:
 
 def main():
     test_cases: List[TestCase] = []
-    with open('tests', 'r') as testsFile:
-        testLines = [s.strip() for s in testsFile.readlines()]
-        for i in range(int(len(testLines) / 7)):
-            if testLines[7*i] != "":
-                args = [testLines[7 * i], testLines[7 * i + 1], testLines[7 * i + 2]]
-            else:
-                args = [testLines[7 * i + 2]]
-            test_cases.append(TestCase(args, testLines[7 * i + 3], testLines[7 * i + 4], testLines[7 * i + 5]))
+    with open('tests.json', 'r') as testsFile:
+        tests_dict = json.loads(testsFile.read())
+    for test in tests_dict:
+        args = [test['cmds']]
+        if test.get('delim'):
+            args = ['-d', test['delim']] + args
+        test_cases += [TestCase(args, test['input'], test['name'], test['output'])]
 
     passedCount, wholeCount = 0, 0
     for test_case in test_cases:
