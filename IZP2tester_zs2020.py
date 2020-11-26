@@ -47,12 +47,12 @@ class TestCase:
                 self.actual_output = test_input_file.read().decode("utf-8")
 
             except UnicodeDecodeError:
-                self.actual_output = f"{cbMAGENTA}{cINVERT}BINARY_TRASH{cRESET}\n\n"
+                self.actual_output = f"BINARY_TRASH\n\n"
             except TimeoutError:
-                self.actual_output = f"{cbLGRAY}{cINVERT}TIMED OUT{cRESET}\n\n"
+                self.actual_output = f"TIMED OUT\n\n"
             except subprocess.CalledProcessError as err:
                 # -11 represents SEGFAULT: https://code-examples.net/en/q/11dd30f
-                self.actual_output = (f'{cbCYAN}{cINVERT}SEGFAULT{cRESET}' if err.returncode == -11 else f'{cLRED}{cINVERT}ERROR{cRESET}') + '\n'
+                self.actual_output = (f'SEGFAULT' if err.returncode == -11 else f'ERROR') + '\n'
 
 
             if self.valgrind:
