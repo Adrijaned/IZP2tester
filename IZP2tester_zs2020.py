@@ -3,6 +3,9 @@ from typing import *
 import tempfile
 import sys
 import json
+import os
+
+from argparse import ArgumentParser
 
 
 class TestCase:
@@ -27,26 +30,34 @@ class TestCase:
             test_input_file.flush()
             try:
                 program_with_args = ["./sps"] + self.args + [test_input_file.name]
-                subprocess.run(program_with_args, timeout=1, check=True)
+                subprocess.run(program_with_args, timeout=1, check=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 test_input_file.seek(0)
                 self.actual_output = test_input_file.read().decode("utf-8")
+
             except UnicodeDecodeError:
                 self.actual_output = "BINARY_TRASH\n\n"
             except TimeoutError:
                 self.actual_output = "TIMED OUT\n\n"
             except subprocess.CalledProcessError as err:
                 # -11 represents SEGFAULT: https://code-examples.net/en/q/11dd30f
-                if err.returncode == -11:
-                    self.actual_output = "SEGFAULT\n\n"
-                else:
-                    self.actual_output = "ERROR\n\n"
+                self.actual_output = ('SEGFAULT' if err.returncode == -11 else 'ERROR') + '\n\n'
+
+
             if self.valgrind:
                 test_input_file.seek(0)
                 source_input_file.seek(0)
                 test_input_file.truncate()
                 test_input_file.write(source_input_file.read())
                 test_input_file.flush()
-                self.valgrind_out = subprocess.run(['valgrind', '--max-stackframe=4040064' if self.valgrind_stack else '', '-q', '--leak-check=full'] + program_with_args, capture_output=True).stderr.decode('utf-8')
+
+
+                cmd_line = ['valgrind', '--log-fd=1', '-q', '--leak-check=full'] + \
+                    (['--max-stackframe=4040064'] if self.valgrind_stack else []) + \
+                    program_with_args
+
+                p = subprocess.Popen(cmd_line, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                out, err = p.communicate()
+                self.valgrind_out = out.decode() if not err else '<valgrind check failed>'
 
     def is_passed(self):
         if self.expected_output != 'ERROR':
@@ -82,6 +93,14 @@ class TestCase:
                 f'{valgrind_log}')
 
 def main():
+
+    parser = ArgumentParser()
+    parser.add_argument('-mc', '--mem-check', dest='mc', action='store_true', help='run a memory check with valgrind')
+    parser.add_argument('-ms', '--max-stack', dest='ms', action='store_true', help='use larger stack size for valgrind')
+    parser.add_argument('-v', '--verbose',    dest='v',  action='store_true', help='increase verbosity')
+
+    parsed = parser.parse_args()
+
     test_cases: List[TestCase] = []
     with open('tests.json', 'r') as testsFile:
         tests_dict = json.loads(testsFile.read())
@@ -89,20 +108,20 @@ def main():
         args = [test['cmds']]
         if test.get('delim'):
             args = ['-d', test['delim']] + args
-        test_cases += [TestCase(args, test['input'], test['name'], test['output'], '-mc' in sys.argv, '-ms' in sys.argv)]
+        test_cases += [TestCase(args, test['input'], test['name'], test['output'], parsed.mc, parsed.ms)]
 
-    passedCount, wholeCount = 0, 0
-    for test_case in test_cases:
-        wholeCount += 1
-        if wholeCount % 20 == 0 or (wholeCount % 5 == 0 and '-mc' in sys.argv):
-            print(f'Running test {wholeCount} of {len(test_cases)}')
+    passedCount = 0
+    for i, test_case in enumerate(test_cases):
+        i += 1
+        if i % 20 == 0 or (i % 5 == 0 and parsed.mc):
+            print(f'Running test {i} of {len(test_cases)}')
         test_case.run_test()
         isPassed = test_case.is_passed()
         if isPassed:
             passedCount += 1
-        if not isPassed or '-v' in sys.argv:
+        if not isPassed or parsed.v:
             print(test_case.get_log())
-    print(f"Passed {passedCount} tests out of {wholeCount}.")
+    print(f"Passed {passedCount} tests out of {i}.")
 
 if __name__ == '__main__':
     main()
