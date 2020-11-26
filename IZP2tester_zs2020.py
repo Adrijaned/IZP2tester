@@ -13,12 +13,13 @@ class TestCase:
     name: str
     valgrind_out: str = ""
 
-    def __init__(self, args: List[str], process_input: str, name: str, expected_output: str, valgrind:bool=False):
+    def __init__(self, args: List[str], process_input: str, name: str, expected_output: str, valgrind:bool=False, valgrind_stack:bool=False):
         self.args = args
         self.process_input = process_input
         self.name = name
         self.expected_output = expected_output
         self.valgrind = valgrind
+        self.valgrind_stack = valgrind_stack
 
     def run_test(self):
         with tempfile.NamedTemporaryFile() as test_input_file, open(self.process_input, 'rb') as source_input_file:
@@ -45,10 +46,7 @@ class TestCase:
                 test_input_file.truncate()
                 test_input_file.write(source_input_file.read())
                 test_input_file.flush()
-                try:
-                    self.valgrind_out = subprocess.run(['valgrind', '-q', '--leak-check=full'] + program_with_args, capture_output=True).stderr.decode('utf-8')
-                except:
-                    print("ahaha")
+                self.valgrind_out = subprocess.run(['valgrind', '--max-stackframe=4040064' if self.valgrind_stack else '', '-q', '--leak-check=full'] + program_with_args, capture_output=True).stderr.decode('utf-8')
 
     def is_passed(self):
         if self.expected_output != 'ERROR':
@@ -91,7 +89,7 @@ def main():
         args = [test['cmds']]
         if test.get('delim'):
             args = ['-d', test['delim']] + args
-        test_cases += [TestCase(args, test['input'], test['name'], test['output'], '-mc' in sys.argv)]
+        test_cases += [TestCase(args, test['input'], test['name'], test['output'], '-mc' in sys.argv, '-ms' in sys.argv)]
 
     passedCount, wholeCount = 0, 0
     for test_case in test_cases:
