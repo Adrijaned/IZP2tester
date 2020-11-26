@@ -39,11 +39,16 @@ class TestCase:
                     self.actual_output = "SEGFAULT\n\n"
                 else:
                     self.actual_output = "ERROR\n\n"
-        if self.valgrind:
-            try:
-                self.valgrind_out = subprocess.run(['valgrind', '-q', '--leak-check=full'] + program_with_args, capture_output=True).stdout.decode('utf-8')
-            except:
-                pass
+            if self.valgrind:
+                test_input_file.seek(0)
+                source_input_file.seek(0)
+                test_input_file.truncate()
+                test_input_file.write(source_input_file.read())
+                test_input_file.flush()
+                try:
+                    self.valgrind_out = subprocess.run(['valgrind', '-q', '--leak-check=full'] + program_with_args, capture_output=True).stderr.decode('utf-8')
+                except:
+                    print("ahaha")
 
     def is_passed(self):
         if self.expected_output != 'ERROR':
