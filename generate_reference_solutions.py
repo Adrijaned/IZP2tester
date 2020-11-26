@@ -17,6 +17,8 @@ class TestCase:
         self.expected_output = expected_output
 
     def run_test(self):
+        if self.expected_output == 'ERROR':
+            return
         with open(self.expected_output, 'wb') as test_input_file, open(self.process_input, 'rb') as source_input_file:
             test_input_file.write(source_input_file.read())
             test_input_file.flush()
