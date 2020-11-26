@@ -64,7 +64,7 @@ class TestCase:
             with open(self.expected_output, 'r') as resultFile:
                 exp_out = resultFile.read()
         else:
-            exp_out = 'ERROR'
+            exp_out = 'ERROR\n\n'
         valgrind_log = "" if self.valgrind_out == "" else ("\nVALGRIND OUTPUT\n" + self.valgrind_out)
         return (f"----------------------\n"
                 f"Test case: {self.name}\n"
