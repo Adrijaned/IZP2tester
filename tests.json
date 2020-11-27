@@ -209,5 +209,98 @@
     "input": "empty_input",
     "cmds": "[1000,1000];set asdf;clear",
     "delim": "p"
+  },
+  {
+    "name": "Selection modes #1",
+    "output": "selmo1",
+    "input": "test_input_1",
+    "cmds": "[2,3];set li"
+  },
+  {
+    "name": "Selection modes #2",
+    "output": "selmo2",
+    "input": "test_input_1",
+    "cmds": "[2,_];set li"
+  },
+  {
+    "name": "Selection modes #3",
+    "output": "selmo3",
+    "input": "test_input_1",
+    "cmds": "[_,3];set li"
+  },
+  {
+    "name": "Selection modes #4",
+    "output": "selmo4",
+    "input": "test_input_1",
+    "cmds": "[_,_];set li"
+  },
+  {
+    "name": "Selection modes #5",
+    "output": "selmo5",
+    "input": "test_input_1",
+    "cmds": "[2,3,6,8];set li"
+  },
+  {
+    "name": "Selection modes #6",
+    "output": "selmo6",
+    "input": "test_input_1",
+    "cmds": "[2,3,6,-];set li"
+  },
+  {
+    "name": "Selection modes #7",
+    "output": "selmo7",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,8];set li"
+  },
+  {
+    "name": "Selection modes #8",
+    "output": "selmo8",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,-];set li"
+  },
+  {
+    "name": "Multi select acol",
+    "output": "muselac",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,-];acol",
+    "delim": ": "
+  },
+  {
+    "name": "Multi select icol",
+    "output": "muselic",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,-];icol",
+    "delim": ": "
+  },
+  {
+    "name": "Multi select dcol",
+    "output": "museldc",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,-];dcol",
+    "delim": ": "
+  },
+  {
+    "name": "Multi select arow",
+    "output": "muselar",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,-];arow"
+  },
+  {
+    "name": "Multi select irow",
+    "output": "muselir",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,-];irow"
+  },
+  {
+    "name": "Multi select drow",
+    "output": "museldr",
+    "input": "test_input_1",
+    "cmds": "[2,3,-,-];drow"
+  },
+  {
+    "name": "Project Euler #1",
+    "output": "preuler1",
+    "input": "empty_input",
+    "cmds": "[1,1,1,2];set 0;[2,2];set 3;[2,1];set -333;def _8;def _9;def _0;[_,2];sum [1,2];[1,2];sum [2,1];[_,1];sum [1,1];inc _0;iszero _0 +2;goto -8;[2,1];set -199;def _0;[1,2];set 0;[2,2];iszero _9 +5;set 5;[1,2];def _9;goto -11;[2,1];set -66;def _0;[1,2];set 0;[2,2];set -15;iszero _8 +4;[1,2];def _8;goto -11;[1,1]"
   }
 ]
