@@ -87,18 +87,20 @@ class TestCase:
                 exp_out = resultFile.read()
         else:
             exp_out = 'ERROR\n'
+
+        passed = self.is_passed()
+
+        status_part = f'[ {f"{cLGREEN}ok" if self.is_passed() else f"{cLRED}er"}{cRESET} ] test: {self.name}'
+        first_log_part = f'{cYELLOW}expected{" = received" if passed else ""}{cRESET}:\n{exp_out}{cbYELLOW}EOF{cRESET}\n'
+        second_log_part = f'\n{cYELLOW}received{cRESET}:\n{self.actual_output}{cbYELLOW}EOF{cRESET}\n' if not passed else ''
         valgrind_log = "" if self.valgrind_out == "" else (f"\n{cYELLOW}valgrind:{cRESET}\n" + self.valgrind_out)
-        return (f"{cBLUE}----------------------{cRESET}\n"
-                f"[ {f'{cLGREEN}ok' if self.is_passed() else f'{cLRED}er'}{cRESET} ] test: {self.name}\n"
-                f"\n"
-                f"input: {self.process_input}\n"
-                f"args:  {printable_args}\n"
-                f'\n'
-                f'{cYELLOW}expected{cRESET}:\n'
-                f'{exp_out}{cbYELLOW}EOF{cRESET}\n'
-                f'\n'
-                f'{cYELLOW}received{cRESET}:\n'
-                f'{self.actual_output}{cbYELLOW}EOF{cRESET}\n'
+
+        return (f'{cBLUE}----------------------{cRESET}\n'
+                f'{status_part}\n\n'
+                f'input: {self.process_input}\n'
+                f'args:  {printable_args}\n\n'
+                f'{first_log_part}'
+                f'{second_log_part}'
                 f'{valgrind_log}')
 
 
@@ -141,20 +143,24 @@ def main():
 
         test_cases += [TestCase(parsed.path, args, test['input'], test['name'], test['output'], parsed.mc, parsed.ms)]
 
-    passed_count = 0
-    for i, test_case in enumerate(test_cases, 1):
+    try:
+        passed_count = 0
+        for i, test_case in enumerate(test_cases, 1):
 
-        if i % 20 == 0 or (i % 5 == 0 and parsed.mc):
-            print(f'Running test {i} of {len(test_cases)}')
+            if i % 20 == 0 or (i % 5 == 0 and parsed.mc):
+                print(f'Running test {i} of {len(test_cases)}')
 
-        test_case.run_test()
-        is_passed = test_case.is_passed()
-        if is_passed:
-            passed_count += 1
-        if not is_passed or parsed.v:
-            print(test_case.get_log())
+            test_case.run_test()
+            is_passed = test_case.is_passed()
+            if is_passed:
+                passed_count += 1
+            if not is_passed or parsed.v:
+                print(test_case.get_log())
 
-    print(f"Passed {passed_count} tests out of {i}. " + (f'{cLGREEN}That\'s 100%!!{cRESET}' if passed_count == len(test_cases) else f'{cLRED}rip{cRESET}'))
+        print(f"Passed {passed_count} tests out of {i}. " + (f'{cLGREEN}That\'s 100%!!{cRESET}' if passed_count == len(test_cases) else f'{cLRED}rip{cRESET}'))
+
+    except KeyboardInterrupt:
+        pass
 
 if __name__ == '__main__':
     main()
