@@ -80,7 +80,8 @@ class TestCase:
         return exp_out == self.actual_output and self.valgrind_out == ''
 
     def get_log(self) -> str:
-        printable_args = '"' + ' '.join(self.args[:-1]) + f" '{self.args[-1]}'" + '"'
+        wrapped_args = ['"' + x + '"' for x in self.args[:-1]] + ["'" + self.args[-1] + "'"]
+        printable_args = ' '.join(wrapped_args)
 
         if self.expected_output != 'ERROR':
             with open(self.expected_output, 'r') as resultFile:
