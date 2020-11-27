@@ -302,5 +302,11 @@
     "output": "preuler1",
     "input": "empty_input",
     "cmds": "[1,1,1,2];set 0;[2,2];set 3;[2,1];set -333;def _8;def _9;def _0;[_,2];sum [1,2];[1,2];sum [2,1];[_,1];sum [1,1];inc _0;iszero _0 +2;goto -8;[2,1];set -199;def _0;[1,2];set 0;[2,2];iszero _9 +5;set 5;[1,2];def _9;goto -11;[2,1];set -66;def _0;[1,2];set 0;[2,2];set -15;iszero _8 +4;[1,2];def _8;goto -11;[1,1]"
+  },
+  {
+    "name": "Tekno's something",
+    "output": "teksmth",
+    "input": "empty_input",
+    "cmds": "set 999999;def _0;def _1;set 0;def _2;sub _2 _1;sub _0 _2;use _0;def _3;[1,2];use _3;set 0;def _4;sub _4 _0;sub _3 _4;use _3"
   }
 ]
