@@ -308,5 +308,11 @@
     "output": "teksmth",
     "input": "empty_input",
     "cmds": "set 999999;def _0;def _1;set 0;def _2;sub _2 _1;sub _0 _2;use _0;def _3;[1,2];use _3;set 0;def _4;sub _4 _0;sub _3 _4;use _3"
+  },
+  {
+    "name": "Uninitialised selection variable",
+    "output": "xd_output",
+    "input": "empty_input",
+    "cmds": "[_];set xd"
   }
 ]
