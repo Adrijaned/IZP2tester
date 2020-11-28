@@ -262,7 +262,7 @@
   },
   {
     "name": "Uninitialised selection variable",
-    "input": "empty_input",
+    "input": "test_input_1",
     "cmds": "[_];set xd"
   }
 ]
