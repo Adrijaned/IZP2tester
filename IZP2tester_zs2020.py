@@ -27,9 +27,10 @@ class TestResult:
     OK = "ok"
     MEM_ERROR = "memerror"
 
-    def __init__(self, type, msg=''):
+    def __init__(self, type, msg='', memcheck_msg=''):
         self.type = type
         self.msg = msg
+        self.memcheck_msg = memcheck_msg
 
 def _run_test(executable, args, filename, memcheck=False, maxstack=False):
     tmp_file_name = filename + '.tmp'
@@ -59,14 +60,16 @@ def _run_test(executable, args, filename, memcheck=False, maxstack=False):
         ret_type = TestResult.SEGFAULT if err.returncode == -11 else TestResult.ERROR
 
     try:
-        if ret_type in [TestResult.OK, TestResult.BINARY]:
-            try:
-                with open(tmp_file_name) as f:
-                    return TestResult(ret_type, f.read())
-            except UnicodeDecodeError as e:
-                return TestResult(TestResult.BINARY, 'BINARY OUTPUT\n')
-        elif ret_type == TestResult.MEM_ERROR:
-            return TestResult(ret_type, ret_msg)
+        try:
+            with open(tmp_file_name) as f:
+                contents = f.read()
+        except UnicodeDecodeError as e:
+            return TestResult(TestResult.BINARY, 'BINARY OUTPUT\n')
+
+        if ret_type == TestResult.MEM_ERROR:
+            return TestResult(ret_type, contents, ret_msg)
+        elif ret_type in [TestResult.OK, TestResult.BINARY]:
+            return TestResult(ret_type, contents)
         else:
             return TestResult(ret_type, str(ret_type).upper() + '\n')
     finally:
@@ -95,7 +98,7 @@ class TestCase:
         status_part = f'[ {f"{cLGREEN}ok" if passed else f"{cLRED}er"}{cRESET} ] test: {self.name}'
         first_log_part = f'{cYELLOW}expected{" = received" if passed else ""}{cRESET}:\n{ref_res.msg}{cbYELLOW}EOF{cRESET}\n'
         second_log_part = f'\n{cYELLOW}received{cRESET}:\n{test_res.msg}{cbYELLOW}EOF{cRESET}\n' if not passed else ''
-        valgrind_log = "" if test_res.type != TestResult.MEM_ERROR else (f"\n{cYELLOW}valgrind:{cRESET}\n" + test_res.msg)
+        valgrind_log = "" if test_res.type != TestResult.MEM_ERROR else (f"\n{cYELLOW}valgrind:{cRESET}\n" + test_res.memcheck_msg)
 
         return passed, (f'{cBLUE}----------------------{cRESET}\n'
                 f'{status_part}\n\n'
