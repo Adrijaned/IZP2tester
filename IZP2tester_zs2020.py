@@ -93,11 +93,12 @@ class TestCase:
         test_res = _run_test(self.exe_path, self.args, self.file_input, self.memcheck, self.maxstack)
 
         printable_args = ' '.join("'" + x + "'" if x != '-d' else x for x in self.args)
-        passed = ref_res.type == test_res.type
+        same_msgs = ref_res.msg == test_res.msg
+        passed = ref_res.type == test_res.type and same_msgs and not ref_res.memcheck_msg
 
         status_part = f'[ {f"{cLGREEN}ok" if passed else f"{cLRED}er"}{cRESET} ] test: {self.name}'
-        first_log_part = f'{cYELLOW}expected{" = received" if passed else ""}{cRESET}:\n{ref_res.msg}{cbYELLOW}EOF{cRESET}\n'
-        second_log_part = f'\n{cYELLOW}received{cRESET}:\n{test_res.msg}{cbYELLOW}EOF{cRESET}\n' if not passed else ''
+        first_log_part = f'{cYELLOW}expected{" = received" if same_msgs else ""}{cRESET}:\n{ref_res.msg}{cbYELLOW}EOF{cRESET}\n'
+        second_log_part = f'\n{cYELLOW}received{cRESET}:\n{test_res.msg}{cbYELLOW}EOF{cRESET}\n' if not same_msgs else ''
         valgrind_log = "" if test_res.type != TestResult.MEM_ERROR else (f"\n{cYELLOW}valgrind:{cRESET}\n" + test_res.memcheck_msg)
 
         return passed, (f'{cBLUE}----------------------{cRESET}\n'
