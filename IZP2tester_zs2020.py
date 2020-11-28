@@ -33,9 +33,9 @@ class TestResult:
 
 def _run_test(executable, args, filename, memcheck=False, maxstack=False):
     tmp_file_name = filename + '.tmp'
-    arguments = (['valgrind', '--log-fd=1', '-q', '--leak-check=full'] if memcheck else []) + \
-                (['--max-stackframe=4040064'] if memcheck and maxstack else []) + \
-                [f'./{executable}'] + args + [tmp_file_name]
+    arguments = ((['valgrind', '--log-fd=1', '-q', '--leak-check=full'] if memcheck else []) +
+                 (['--max-stackframe=4040064'] if memcheck and maxstack else []) +
+                 [f'./{executable}'] + args + [tmp_file_name])
 
     shutil.copyfile(filename, tmp_file_name)
 
