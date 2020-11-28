@@ -1,317 +1,267 @@
 [
   {
     "name": "set Ahoy",
-    "output": "set_Ahoy",
     "input": "test_input_1",
     "cmds": "set Ahoy"
   },
   {
     "name": "irow",
-    "output": "irow",
     "input": "test_input_1",
     "cmds": "irow"
   },
   {
     "name": "arow",
-    "output": "arow",
     "input": "test_input_1",
     "cmds": "arow"
   },
   {
     "name": "drow",
-    "output": "drow",
     "input": "test_input_1",
     "cmds": "drow"
   },
   {
     "name": "icol",
-    "output": "icol",
     "input": "test_input_1",
     "cmds": "icol"
   },
   {
     "name": "acol",
-    "output": "acol",
     "input": "test_input_1",
     "cmds": "acol"
   },
   {
     "name": "dcol",
-    "output": "dcol",
     "input": "test_input_1",
     "cmds": "dcol"
   },
   {
     "name": "clear",
-    "output": "clear",
     "input": "test_input_1",
     "cmds": "clear"
   },
   {
     "name": "swap",
-    "output": "swap_2_1",
     "input": "test_input_1",
     "cmds": "swap [2,1]"
   },
   {
     "name": "sum",
-    "output": "sum_1_2",
     "input": "test_input_2",
     "cmds": "sum [1,2]",
     "delim": ":"
   },
   {
     "name": "[_,1];sum",
-    "output": "sum_c_1_2",
     "input": "test_input_2",
     "cmds": "[_,1];sum [1,2]",
     "delim": ":"
   },
   {
     "name": "avg",
-    "output": "avg_1_2",
     "input": "test_input_2",
     "cmds": "avg [1,2]",
     "delim": ":"
   },
   {
     "name": "[_,1];avg",
-    "output": "avg_c_1_2",
     "input": "test_input_2",
     "cmds": "[_,1];avg [1,2]",
     "delim": ":"
   },
   {
     "name": "count",
-    "output": "count_1_2",
     "input": "test_input_2",
     "cmds": "count [1,2]",
     "delim": ":"
   },
   {
     "name": "[_,1];count",
-    "output": "count_c_1_2",
     "input": "test_input_2",
     "cmds": "[_,1];count [1,2]",
     "delim": ":"
   },
   {
     "name": "len",
-    "output": "len_1_2",
     "input": "test_input_2",
     "cmds": "len [1,2]",
     "delim": ":"
   },
   {
     "name": "[_,1];len",
-    "output": "len_c_1_2",
     "input": "test_input_2",
     "cmds": "[_,1];len [1,2]",
     "delim": ":"
   },
   {
     "name": "def-use",
-    "output": "def_3_use_3",
     "input": "test_input_1",
     "cmds": "def _3;[2,2];use _3"
   },
   {
     "name": "[1,1,3,1];dcol;set set",
-    "output": "3_dcol",
     "input": "test_input_1",
     "cmds": "[1,1,3,1];dcol;set set"
   },
   {
     "name": "Příklad ze zadání 1",
-    "output": "tab1.txt",
     "input": "tab.txt",
     "cmds": "[1,_];irow;[1,1];set Jmeno;[1,2];set Prijmeni;[1,3];set Plat"
   },
   {
     "name": "Příklad ze zadání 2",
-    "output": "tab2.txt",
     "input": "tab.txt",
     "cmds": "[1,_];irow;[1,1];set Jmeno;[1,2];set Prijmeni;[1,3];set Plat;[_,_];[max];def _0;[2,3,-,3];use _0"
   },
   {
     "name": "Příklad ze zadání 3",
-    "output": "tab3.txt",
     "input": "tab.txt",
     "cmds": "[1,_];irow;[1,1];set Jmeno;[1,2];set Prijmeni;[1,3];set Plat;[_,_];[max];def _0;[2,3,-,3];use _0;[_,3];acol;[1,_];swap [1,4];inc _1;[2,_];swap [2,4];[2,1];use _1;inc _1;[3,_];swap [3,4];[3,1];use _1;inc _1;[4,_];swap [4,4];[4,1];use _1"
   },
   {
     "name": "set regular string",
-    "output": "set_normal",
     "input": "test_input_1",
     "cmds": "set normal"
   },
   {
     "name": "set regular quoted string. The result should not be quoted, because it has no reason to be",
-    "output": "set_normal_quoted",
     "input": "test_input_1",
     "cmds": "set \"quoted\""
   },
   {
     "name": "set quoted string with delims. The result should be quoted because of the delims",
-    "output": "set_delims_quoted",
     "input": "test_input_1",
     "cmds": "set \"quoted delim containing string, duh!\""
   },
   {
     "name": "set string with backslash. Here the backslash is NOP.",
-    "output": "set_normal_backslash",
     "input": "test_input_1",
     "cmds": "set back\\nslashed"
   },
   {
     "name": "set quoted string with backslash. Here the backslash is similarly NOP.",
-    "output": "set_quoted_backslash",
     "input": "test_input_1",
     "cmds": "set \"back\\nslashed\""
   },
   {
     "name": "Per spec, cells containing delims must be quoted on output, no matter how they were input",
-    "output": "set_backslashed_delims",
     "input": "test_input_1",
     "cmds": "set testing\\ delims\\ through\\ backslashes"
   },
   {
     "name": "This test mainly validates correct handling of table as present in test_input_edges",
-    "output": "test_input_edges_out",
     "input": "test_input_edges",
     "cmds": "[1,4];set \"\\y\\e\\p\\,\\ \\t\\h\\o\\s\\e\\\"\\ \\a\\r\\e\\\\\\ \\e\\d\\g\\e\\ \\c\\a\\s\\e\\s\"",
     "delim": ","
   },
   {
     "name": "Calculates 25th fibonacci number. Requires implemented goto's and relevant.",
-    "output": "fib25",
     "input": "empty_input",
     "cmds": "set 25;[1,2];set 1;[1,3];set 1;[1,1];def _4;[1,2];def _1;[1,3];def _2;[1,1];set 1;def _0;sub _4 _0;iszero _4 +15;set 0;use _1;def _3;set 0;def _0;sub _0 _2;sub _3 _0;set 0;use _2;def _1;set 0;use _3;def _2;goto -17;use _1",
     "delim": ":"
   },
   {
     "name": "Hope you are checking malloc outputs!",
-    "output": "ERROR",
     "input": "empty_input",
     "cmds": "[1,2147483630];set asdf",
     "delim": "["
   },
   {
     "name": "Hope you are checking malloc outputs 2!",
-    "output": "ERROR",
     "input": "empty_input",
     "cmds": "[2147483630,1];set asdf",
     "delim": "|"
   },
   {
     "name": "Table cropping",
-    "output": "table_crop",
     "input": "empty_input",
     "cmds": "[1000,1000];set asdf;clear",
     "delim": "p"
   },
   {
     "name": "Selection modes #1",
-    "output": "selmo1",
     "input": "test_input_1",
     "cmds": "[2,3];set li"
   },
   {
     "name": "Selection modes #2",
-    "output": "selmo2",
     "input": "test_input_1",
     "cmds": "[2,_];set li"
   },
   {
     "name": "Selection modes #3",
-    "output": "selmo3",
     "input": "test_input_1",
     "cmds": "[_,3];set li"
   },
   {
     "name": "Selection modes #4",
-    "output": "selmo4",
     "input": "test_input_1",
     "cmds": "[_,_];set li"
   },
   {
     "name": "Selection modes #5",
-    "output": "selmo5",
     "input": "test_input_1",
     "cmds": "[2,3,6,8];set li"
   },
   {
     "name": "Selection modes #6",
-    "output": "selmo6",
     "input": "test_input_1",
     "cmds": "[2,3,6,-];set li"
   },
   {
     "name": "Selection modes #7",
-    "output": "selmo7",
     "input": "test_input_1",
     "cmds": "[2,3,-,8];set li"
   },
   {
     "name": "Selection modes #8",
-    "output": "selmo8",
     "input": "test_input_1",
     "cmds": "[2,3,-,-];set li"
   },
   {
     "name": "Multi select acol",
-    "output": "muselac",
     "input": "test_input_1",
     "cmds": "[2,3,-,-];acol",
     "delim": ": "
   },
   {
     "name": "Multi select icol",
-    "output": "muselic",
     "input": "test_input_1",
     "cmds": "[2,3,-,-];icol",
     "delim": ": "
   },
   {
     "name": "Multi select dcol",
-    "output": "museldc",
     "input": "test_input_1",
     "cmds": "[2,3,-,-];dcol",
     "delim": ": "
   },
   {
     "name": "Multi select arow",
-    "output": "muselar",
     "input": "test_input_1",
     "cmds": "[2,3,-,-];arow"
   },
   {
     "name": "Multi select irow",
-    "output": "muselir",
     "input": "test_input_1",
     "cmds": "[2,3,-,-];irow"
   },
   {
     "name": "Multi select drow",
-    "output": "museldr",
     "input": "test_input_1",
     "cmds": "[2,3,-,-];drow"
   },
   {
     "name": "Project Euler #1",
-    "output": "preuler1",
     "input": "empty_input",
     "cmds": "[1,1,1,2];set 0;[2,2];set 3;[2,1];set -333;def _8;def _9;def _0;[_,2];sum [1,2];[1,2];sum [2,1];[_,1];sum [1,1];inc _0;iszero _0 +2;goto -8;[2,1];set -199;def _0;[1,2];set 0;[2,2];iszero _9 +5;set 5;[1,2];def _9;goto -11;[2,1];set -66;def _0;[1,2];set 0;[2,2];set -15;iszero _8 +4;[1,2];def _8;goto -11;[1,1]"
   },
   {
     "name": "Tekno's something",
-    "output": "teksmth",
     "input": "empty_input",
     "cmds": "set 999999;def _0;def _1;set 0;def _2;sub _2 _1;sub _0 _2;use _0;def _3;[1,2];use _3;set 0;def _4;sub _4 _0;sub _3 _4;use _3"
   },
   {
     "name": "Uninitialised selection variable",
-    "output": "xd_output",
     "input": "empty_input",
     "cmds": "[_];set xd"
   }

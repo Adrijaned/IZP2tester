@@ -1,11 +1,10 @@
 from argparse import ArgumentParser
-
 from typing import *
+
 import subprocess
-import tempfile
+import shutil
 import json
 import os
-import shutil
 
 
 cLGREEN = '\033[1;92m'
@@ -74,21 +73,15 @@ def _run_test(executable, args, filename, memcheck=False, maxstack=False):
         os.unlink(tmp_file_name)
 
 class TestCase:
-    args: List[str]
-    process_input: str
-    expected_output: str
-    actual_output: str
-    name: str
-    valgrind_out: str = ""
 
-    def __init__(self, exe_path: str, args: List[str], file_input: str, name: str, memcheck:bool=False, maxstack:bool=False):
+    def __init__(self, name: str, exe_path: str, args: List[str], file_input: str, memcheck:bool=False, maxstack:bool=False):
+        self.name = name
         self.exe_path = exe_path
         self.args = args
         self.file_input = file_input
-        self.name = name
+
         self.memcheck = memcheck
         self.maxstack = maxstack
-
 
     def run_test(self):
 
@@ -150,7 +143,7 @@ def main():
         if test.get('delim'):
             args = ['-d', test['delim']] + args
 
-        test_cases += [TestCase(parsed.path, args, test['input'], test['name'], parsed.mc, parsed.ms)]
+        test_cases += [TestCase(test['name'], parsed.path, args, test['input'], parsed.mc, parsed.ms)]
 
     try:
         passed_count = 0
