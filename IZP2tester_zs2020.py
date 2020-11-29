@@ -34,12 +34,11 @@ class TestResult:
 
 def _run_test(executable, args, filename, memcheck=False, maxstack=False):
     tmp_file_name = filename + '.tmp'
-    cmd_line = ' '.join([('valgrind --log-fd=3 -q --leak-check=full' if memcheck else ''),
+    cmd_line = ' '.join([('valgrind --log-file=valgrind_out.tmp -q --leak-check=full' if memcheck else ''),
         ('--max-stackframe=4040064' if memcheck and maxstack else ''),
         f'./{executable}',
         ' '.join(map(lambda x: '"' + x.replace('\\', '\\\\').replace('"', '\\"') + '"', args)),
-        tmp_file_name,
-        ('3> valgrind_out.tmp' if memcheck else '')
+        tmp_file_name
     ])
 
     shutil.copyfile(filename, tmp_file_name)
