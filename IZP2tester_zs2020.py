@@ -68,7 +68,7 @@ def _run_test(executable, args, filename, memcheck=False, maxstack=False):
         except subprocess.TimeoutExpired:
             ret_type = TestResult.TIMEOUT
         except subprocess.CalledProcessError as err:
-            ret_type = TestResult.SEGFAULT if err.returncode == -11 else TestResult.ERROR
+            ret_type = TestResult.SEGFAULT if err.returncode == -117 else TestResult.ERROR
 
 
         try:
