@@ -34,32 +34,43 @@ class TestResult:
 
 def _run_test(executable, args, filename, memcheck=False, maxstack=False):
     tmp_file_name = filename + '.tmp'
-    arguments = ((['valgrind', '--log-fd=1', '-q', '--leak-check=full'] if memcheck else []) +
-                 (['--max-stackframe=4040064'] if memcheck and maxstack else []) +
-                 [f'./{executable}'] + args + [tmp_file_name])
+    cmd_line = ' '.join([('valgrind --log-file=valgrind_out.tmp -q --leak-check=full' if memcheck else ''),
+        ('--max-stackframe=4040064' if memcheck and maxstack else ''),
+        f'./{executable}',
+        ' '.join(map(lambda x: '"' + x.replace('\\', '\\\\').replace('"', '\\"') + '"', args)),
+        tmp_file_name
+    ])
 
     shutil.copyfile(filename, tmp_file_name)
 
     ret_type = None
     ret_msg = None
-    try:
-        p = subprocess.Popen(arguments, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = p.communicate(timeout=3)
-
-        if p.returncode:
-            raise subprocess.CalledProcessError(p.returncode - 256, ' '.join(arguments))
-        if out:
-            ret_type = TestResult.MEM_ERROR
-            ret_msg = out.decode()
-        else:
-            ret_type = TestResult.OK
-
-    except subprocess.TimeoutExpired:
-        ret_type = TestResult.TIMEOUT
-    except subprocess.CalledProcessError as err:
-        ret_type = TestResult.SEGFAULT if err.returncode == -11 else TestResult.ERROR
 
     try:
+        try:
+            p = subprocess.Popen(cmd_line, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+            out, err = p.communicate(timeout=3)
+
+            try:
+                with open('valgrind_out.tmp') as f:
+                    valgrind_out = f.read()
+            except IOError:
+                valgrind_out = ''
+
+            if p.returncode:
+                raise subprocess.CalledProcessError(p.returncode - 256, cmd_line)
+            if valgrind_out:
+                ret_type = TestResult.MEM_ERROR
+                ret_msg = valgrind_out
+            else:
+                ret_type = TestResult.OK
+
+        except subprocess.TimeoutExpired:
+            ret_type = TestResult.TIMEOUT
+        except subprocess.CalledProcessError as err:
+            ret_type = TestResult.SEGFAULT if err.returncode == -117 else TestResult.ERROR
+
+
         try:
             with open(tmp_file_name) as f:
                 contents = f.read()
@@ -74,6 +85,8 @@ def _run_test(executable, args, filename, memcheck=False, maxstack=False):
             return TestResult(ret_type, str(ret_type).upper() + '\n')
     finally:
         os.unlink(tmp_file_name)
+        if memcheck:
+            os.unlink('valgrind_out.tmp')
 
 class TestCase:
 
@@ -162,7 +175,7 @@ def main():
             if i % 20 == 0 or (i % 5 == 0 and parsed.mc):
                 print(f'Ran test {i} of {len(test_cases)}')
 
-        print(f"Passed {passed_count} tests out of {i}. " + (f'{cLGREEN}That\'s 100%!!{cRESET}' if passed_count == len(test_cases) else f'{cLRED}rip{cRESET}'))
+        print(f"Passed {passed_count} tests out of {i}. " + (f'{cLGREEN}That\'s 100%!!{cRESET}' if passed_count == i else f'{cLRED}rip{cRESET}'))
 
     except KeyboardInterrupt:
         pass
