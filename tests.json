@@ -264,5 +264,10 @@
     "name": "Uninitialised selection variable",
     "input": "test_input_1",
     "cmds": "[_];set xd"
+  },
+  {
+    "name": "Not an endless loop",
+    "input": "empty_input",
+    "cmds": "[1,1,1,3];set 0;def _1;[1,1];def _0;inc _0;use _0;len [1,2];[1,2];def _0;sub _1 _0;inc _1;iszero _1 -9"
   }
 ]
