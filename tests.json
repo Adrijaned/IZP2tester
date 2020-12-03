@@ -269,5 +269,45 @@
     "name": "Not an endless loop",
     "input": "empty_input",
     "cmds": "[1,1,1,3];set 0;def _1;[1,1];def _0;inc _0;use _0;len [1,2];[1,2];def _0;sub _1 _0;inc _1;iszero _1 -9"
+  },
+  {
+    "name": "Simple set",
+    "input": "simple_input",
+    "cmds": "set 0"
+  },
+  {
+    "name": "Simple clear",
+    "input": "simple_input",
+    "cmds": "clear"
+  },
+  {
+    "name": "Simple irow",
+    "input": "simple_input",
+    "cmds": "irow"
+  },
+  {
+    "name": "Simple arow",
+    "input": "simple_input",
+    "cmds": "arow"
+  },
+  {
+    "name": "Simple drow",
+    "input": "simple_input",
+    "cmds": "drow"
+  },
+  {
+    "name": "Simple icol",
+    "input": "simple_input",
+    "cmds": "icol"
+  },
+  {
+    "name": "Simple acol",
+    "input": "simple_input",
+    "cmds": "acol"
+  },
+  {
+    "name": "Simple dcol",
+    "input": "simple_input",
+    "cmds": "dcol"
   }
 ]
