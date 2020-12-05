@@ -30,7 +30,7 @@
     "cmds": "acol"
   },
   {
-    "name": "dcol",
+    "name": "NEBUDE TESTOVANO dcol",
     "input": "test_input_1",
     "cmds": "dcol"
   },
