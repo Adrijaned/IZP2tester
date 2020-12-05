@@ -1,9 +1,14 @@
+from multiprocessing.pool import ThreadPool
+from threading import Thread, Lock
 from argparse import ArgumentParser
 from typing import *
 
 import subprocess
 import shutil
+import string
+import random
 import json
+import time
 import os
 
 
@@ -32,9 +37,15 @@ class TestResult:
         self.msg = msg
         self.memcheck_msg = memcheck_msg
 
+def get_tmp_filename(length=8):
+    alphabet = string.digits + string.ascii_letters
+    return ''.join(random.choice(alphabet) for i in range(length)) + '.tmp'
+
+
 def _run_test(executable, args, filename, memcheck=False, maxstack=False):
-    tmp_file_name = filename + '.tmp'
-    cmd_line = ' '.join([('valgrind --log-file=valgrind_out.tmp -q --leak-check=full' if memcheck else ''),
+    tmp_file_name = get_tmp_filename()
+    tmp_valgrind_out = get_tmp_filename()
+    cmd_line = ' '.join([(f'valgrind --log-file={tmp_valgrind_out} -q --leak-check=full' if memcheck else ''),
         ('--max-stackframe=4040064' if memcheck and maxstack else ''),
         f'./{executable}',
         ' '.join(map(lambda x: '"' + x.replace('\\', '\\\\').replace('"', '\\"') + '"', args)),
@@ -52,7 +63,7 @@ def _run_test(executable, args, filename, memcheck=False, maxstack=False):
             out, err = p.communicate(timeout=3)
 
             try:
-                with open('valgrind_out.tmp') as f:
+                with open(tmp_valgrind_out) as f:
                     valgrind_out = f.read()
             except IOError:
                 valgrind_out = ''
@@ -87,7 +98,7 @@ def _run_test(executable, args, filename, memcheck=False, maxstack=False):
     finally:
         os.unlink(tmp_file_name)
         if memcheck:
-            os.unlink('valgrind_out.tmp')
+            os.unlink(tmp_valgrind_out)
 
 class TestCase:
 
@@ -100,6 +111,8 @@ class TestCase:
         self.memcheck = memcheck
         self.maxstack = maxstack
 
+        self.passed = None
+
     def run_test(self):
 
         # run the reference and user's test
@@ -108,14 +121,14 @@ class TestCase:
 
         printable_args = ' '.join("'" + x + "'" if x != '-d' else x for x in self.args)
         same_msgs = ref_res.msg == test_res.msg
-        passed = ref_res.type == test_res.type and same_msgs and not ref_res.memcheck_msg
+        self.passed = ref_res.type == test_res.type and same_msgs and not ref_res.memcheck_msg
 
-        status_part = f'[ {f"{cLGREEN}ok" if passed else f"{cLRED}er"}{cRESET} ] test: {self.name}'
+        status_part = f'[ {f"{cLGREEN}ok" if self.passed else f"{cLRED}er"}{cRESET} ] test: {self.name}'
         first_log_part = f'{cYELLOW}expected{" = received" if same_msgs else ""}{cRESET}:\n{ref_res.msg}{cbYELLOW}EOF{cRESET}\n'
         second_log_part = f'\n{cYELLOW}received{cRESET}:\n{test_res.msg}{cbYELLOW}EOF{cRESET}\n' if not same_msgs else ''
         valgrind_log = "" if test_res.type != TestResult.MEM_ERROR else (f"\n{cYELLOW}valgrind:{cRESET}\n" + test_res.memcheck_msg)
 
-        return passed, (f'{cBLUE}----------------------{cRESET}\n'
+        return (f'{cBLUE}----------------------{cRESET}\n'
                 f'{status_part}\n\n'
                 f'input: {self.file_input}\n'
                 f'args:  {printable_args}\n\n'
@@ -163,23 +176,48 @@ def main():
 
         test_cases += [TestCase(test['name'], parsed.path, args, test['input'], parsed.mc, parsed.ms)]
 
-    try:
-        passed_count = 0
-        for i, test_case in enumerate(test_cases, 1):
+    print_lock = Lock()
 
-            success, data = test_case.run_test()
-            if success:
-                passed_count += 1
-            if not success or parsed.v:
+    # run test_case and print result
+    def run_and_print_test(test_case):
+        global running
+        data = test_case.run_test()
+
+        if not test_case.passed or parsed.v:
+            with print_lock:
                 print(data)
 
-            if i % 20 == 0 or (i % 5 == 0 and parsed.mc):
-                print(f'Ran test {i} of {len(test_cases)}')
+    # run in background and continuously print number of completed tests so far
+    def print_elapsed_test_nums():
+        last_count = 0
+        while True:
+            n_completed = len([test for test in test_cases if test.passed != None])
+            if n_completed == len(test_cases):
+                break
 
-        print(f"Passed {passed_count} tests out of {i}. " + (f'{cLGREEN}That\'s 100%!!{cRESET}' if passed_count == i else f'{cLRED}rip{cRESET}'))
+            if last_count + 10 < n_completed:
+                last_count += 10
+                print(f'completed {last_count} out of {len(test_cases)}')
+
+            time.sleep(.1)
+
+    # print number of completed test cases while they're being mapped
+    Thread(target=print_elapsed_test_nums, daemon=True).start()
+
+    try:
+        with ThreadPool(4) as p:
+            p.map(run_and_print_test, test_cases)
+
+        passed_count = len([test_case for test_case in test_cases if test_case.passed])
+        test_count   = len(test_cases)
+        print(f"Passed {passed_count} tests out of {test_count}. " + (f'{cLGREEN}That\'s 100%!!{cRESET}' if passed_count == test_count else f'{cLRED}rip{cRESET}'))
 
     except KeyboardInterrupt:
         pass
+    finally:
+        for fname in os.listdir('.'):
+            if fname[-4:] == '.tmp':
+                os.unlink(fname)
 
 if __name__ == '__main__':
     main()
