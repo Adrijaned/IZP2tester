@@ -214,6 +214,10 @@ def main():
 
     except KeyboardInterrupt:
         pass
+    finally:
+        for fname in os.listdir('.'):
+            if fname[-4:] == '.tmp':
+                os.unlink(fname)
 
 if __name__ == '__main__':
     main()
